@@ -22,7 +22,7 @@ jobs:
         local-dir: ./resep-ku-pro/
         # HAPUS bagian resepkupro.khuncode.com di sini karena kita mau isi 
         # langsung ke folder tujuan yang sudah 'dilompat' tadi
-        server-dir: ../../resepkupro.khuncode.com/
+        server-dir: ./
         exclude: |
           **/.git*
           **/node_modules/**
