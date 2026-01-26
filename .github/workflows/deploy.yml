@@ -19,12 +19,13 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        # PENTING: arahkan ke sub-folder kodinganmu di repo GitHub
         local-dir: ./resep-ku-pro/
+        # HAPUS bagian resepkupro.khuncode.com di sini karena kita mau isi 
+        # langsung ke folder tujuan yang sudah 'dilompat' tadi
         server-dir: ../../resepkupro.khuncode.com/
         exclude: |
           **/.git*
           **/node_modules/**
           **/vendor/**
           .env
-          storage/logs/**cd re
+          storage/logs/**
