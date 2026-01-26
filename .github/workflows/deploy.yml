@@ -1,0 +1,31 @@
+name: Deploy ResepKuPro
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: Syncing to Subdomain
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        # PENTING: arahkan ke sub-folder kodinganmu di repo GitHub
+        local-dir: ./resep-ku-pro/ 
+        # Sesuai gambar cPanel kamu, arahkan ke folder induk subdomain
+        server-dir: ./resepkupro.khuncode.com/ 
+        exclude: |
+          **/.git*
+          **/node_modules/**
+          **/vendor/**
+          .env
+          storage/logs/**
