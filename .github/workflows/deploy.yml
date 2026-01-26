@@ -20,9 +20,8 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         # PENTING: arahkan ke sub-folder kodinganmu di repo GitHub
-        local-dir: ./resep-ku-pro/ 
-        # Sesuai gambar cPanel kamu, arahkan ke folder induk subdomain
-        server-dir: ./resepkupro.khuncode.com/ 
+        local-dir: ./resep-ku-pro/
+        server-dir: ./resepkupro.khuncode.com/
         exclude: |
           **/.git*
           **/node_modules/**
