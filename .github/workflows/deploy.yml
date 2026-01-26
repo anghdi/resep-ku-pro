@@ -21,7 +21,7 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         # PENTING: arahkan ke sub-folder kodinganmu di repo GitHub
         local-dir: ./resep-ku-pro/
-        server-dir: ./resepkupro.khuncode.com/
+        server-dir: ../../resepkupro.khuncode.com/
         exclude: |
           **/.git*
           **/node_modules/**
