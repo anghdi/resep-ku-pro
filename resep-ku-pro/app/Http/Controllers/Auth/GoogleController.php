@@ -10,12 +10,12 @@ class GoogleController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback()
     {
-        $googleUser = Socialite::driver('google')->user();
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
 
         $user = User::updateOrCreate([
@@ -29,6 +29,12 @@ class GoogleController extends Controller
 
         // Login ke sistem Laravel
         Auth::login($user);
+
+        request()->session()->regenerate();
+
+        if (empty($user->role)) {
+            return redirect()->route('complete-profile');
+        }
 
         // Lempar ke halaman dashboard setelah sukses
         return redirect()->intended('/dashboard');

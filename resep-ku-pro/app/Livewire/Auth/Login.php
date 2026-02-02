@@ -24,7 +24,7 @@ class Login extends Component
     }
     public function render()
     {
-        return view('livewire.auth.login');
+        return view('livewire.auth.login')->layout('layouts.guest');
     }
 
     public function setLocale($lang)

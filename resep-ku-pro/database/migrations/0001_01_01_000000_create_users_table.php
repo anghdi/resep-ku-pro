@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('org_id')->nullable();
-            $table->string('role')->default('staff');
+            $table->string('role')->nullable();
             $table->string('full_name');
             $table->string('email')->unique();
             $table->string('password')->nullable(); // Nullable untuk user Google
@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->string('status')->default('active');
             $table->boolean('is_superadmin')->default(false);
+            $table->timestamp('subscription_until')->nullable();
+            $table->string('outlet')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

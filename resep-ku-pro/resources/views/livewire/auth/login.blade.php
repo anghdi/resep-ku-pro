@@ -2,15 +2,21 @@
 
     <div class="absolute top-6 right-6 z-30">
         <div class="flex gap-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-orange-100">
-            <button wire:click="setLocale('en')" class="px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-extrabold transition-all {{ app()->getLocale() == 'en' ? 'bg-[#f97316] text-white shadow-md' : 'text-gray-500 hover:text-orange-600' }}">EN</button>
-            <button wire:click="setLocale('id')" class="px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-extrabold transition-all {{ app()->getLocale() == 'id' ? 'bg-[#f97316] text-white shadow-md' : 'text-gray-500 hover:text-orange-600' }}">ID</button>
+            <button wire:click="setLocale('en')"
+                class="px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-extrabold transition-all {{ app()->getLocale() == 'en' ? 'bg-[#f97316] text-white shadow-md' : 'text-gray-500 hover:text-orange-600' }}">EN</button>
+            <button wire:click="setLocale('id')"
+                class="px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-extrabold transition-all {{ app()->getLocale() == 'id' ? 'bg-[#f97316] text-white shadow-md' : 'text-gray-500 hover:text-orange-600' }}">ID</button>
         </div>
     </div>
 
-    <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-[6px] border-white ring-4 ring-orange-100/50">
+    <div
+        class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-[6px] border-white ring-4 ring-orange-100/50">
 
-        <div class="hidden md:flex md:w-[45%] bg-cover bg-center relative min-h-full group" style="background-image: url('https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1977&auto=format&fit=crop');">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#f97316]/95 via-[#f97316]/70 to-orange-900/40 transition-opacity group-hover:opacity-90"></div>
+        <div class="hidden md:flex md:w-[45%] bg-cover bg-center relative min-h-full group"
+            style="background-image: url('https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1977&auto=format&fit=crop');">
+            <div
+                class="absolute inset-0 bg-gradient-to-t from-[#f97316]/95 via-[#f97316]/70 to-orange-900/40 transition-opacity group-hover:opacity-90">
+            </div>
             <div class="relative z-10 p-10 flex flex-col justify-center items-center text-center text-white h-full">
                 <h2 class="text-4xl font-black italic leading-tight drop-shadow-lg uppercase tracking-tighter">
                     {{ __('Dive into the World of Recipes') }}
@@ -33,36 +39,54 @@
             </div>
 
             <div class="mb-8 relative text-center md:text-left">
-                <h3 class="text-2xl font-black text-gray-900 uppercase tracking-tighter leading-none border-b-2 border-orange-100 pb-1 inline-block">{{ __('Welcome Back, Chef!') }}</h3>
-                <p class="text-gray-500 font-medium mt-3 text-sm md:text-base">{{ __('Please enter your details to stay cooking.') }}</p>
+                <h3
+                    class="text-2xl font-black text-gray-900 uppercase tracking-tighter leading-none border-b-2 border-orange-100 pb-1 inline-block">
+                    {{ __('Welcome Back, Chef!') }}</h3>
+                <p class="text-gray-500 font-medium mt-3 text-sm md:text-base">
+                    {{ __('Please enter your details to stay cooking.') }}</p>
             </div>
+
+            @if (session()->has('success'))
+                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-xl border-l-4 border-green-500">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <form wire:submit.prevent="login" class="relative z-10 space-y-4">
                 <div>
-                    <label class="block text-[10px] font-extrabold text-gray-800 uppercase tracking-widest mb-1.5 ml-1">{{ __('Email address') }}</label>
-                    <input type="email" wire:model="email" class="w-full px-5 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700 placeholder-gray-400" placeholder="chef@resepku.com">
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-800 uppercase tracking-widest mb-1.5 ml-1">{{ __('Email address') }}</label>
+                    <input type="email" wire:model="email"
+                        class="w-full px-5 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700 placeholder-gray-400"
+                        placeholder="chef@resepku.com">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-extrabold text-gray-800 uppercase tracking-widest mb-1.5 ml-1">{{ __('Password') }}</label>
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-800 uppercase tracking-widest mb-1.5 ml-1">{{ __('Password') }}</label>
                     <div class="relative">
-                        <input type="password" wire:model="password" class="w-full px-5 py-3 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700">
-                        <x-lucide-eye-off class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 cursor-pointer hover:text-[#f97316] transition-colors" />
+                        <input type="password" wire:model="password"
+                            class="w-full px-5 py-3 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700">
+                        <x-lucide-eye-off
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 cursor-pointer hover:text-[#f97316] transition-colors" />
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-[#f97316] to-orange-600 hover:shadow-orange-200/80 text-white font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-[0.2em] text-sm transform active:scale-[0.97] mt-2">
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-[#f97316] to-orange-600 hover:shadow-orange-200/80 text-white font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-[0.2em] text-sm transform active:scale-[0.97] mt-2">
                     {{ __('Login') }}
                 </button>
             </form>
 
             <div class="flex items-center my-6 text-gray-100 relative z-10">
                 <div class="flex-grow border-t-2 border-gray-100 rounded-full"></div>
-                <span class="px-3 text-[9px] font-black uppercase tracking-widest text-gray-300">{{ __('Or') }}</span>
+                <span
+                    class="px-3 text-[9px] font-black uppercase tracking-widest text-gray-300">{{ __('Or') }}</span>
                 <div class="flex-grow border-t-2 border-gray-100 rounded-full"></div>
             </div>
 
-            <a href="/auth/google" class="relative z-10 w-full flex items-center justify-center gap-3 border-2 border-gray-100 bg-white py-3 rounded-xl hover:bg-gray-50 transition-all font-bold text-gray-700 text-sm group shadow-sm">
+            <a href="/auth/google"
+                class="relative z-10 w-full flex items-center justify-center gap-3 border-2 border-gray-100 bg-white py-3 rounded-xl hover:bg-gray-50 transition-all font-bold text-gray-700 text-sm group shadow-sm">
                 <svg class="w-5 h-5 filter grayscale group-hover:grayscale-0 transition-all" viewBox="0 0 24 24">
                     <path fill="#4285F4"
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -77,7 +101,8 @@
             </a>
 
             <p class="mt-6 text-center text-xs font-bold text-gray-400">
-                {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}" class="text-[#f97316] hover:underline">{{ __('Register here') }}</a>
+                {{ __('Don\'t have an account?') }} <a href="{{ route('register') }}"
+                    class="text-[#f97316] hover:underline">{{ __('Register here') }}</a>
             </p>
         </div>
     </div>
