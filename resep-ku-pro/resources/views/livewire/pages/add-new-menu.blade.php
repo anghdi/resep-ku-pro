@@ -126,8 +126,7 @@
                                 </div>
                                 <div class="h-32 border border-dashed rounded-xl overflow-hidden bg-white">
                                     @if ($edit_image_url)
-                                        <img src="{{ asset('storage/' . $edit_image_url) }}"
-                                            class="w-full h-full object-cover">
+                                        <img src="{{ asset('storage/' . $edit_image_url) }}" class="w-full h-full object-cover">
                                     @endif
                                 </div>
                             </div>
@@ -188,6 +187,49 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                @if($selected_recipe_id)
+                    <div class="mt-10 space-y-8 animate-fade-in">
+
+                        <div class="p-1 border-2 border-red-500 rounded-[2rem] bg-white shadow-sm overflow-hidden">
+                            <div class="p-8">
+                                <h3
+                                    class="text-[10px] font-black uppercase text-gray-400 mb-6 flex items-center gap-2 tracking-[0.2em]">
+                                    <x-lucide-file-text class="w-4 h-4" /> Cooking Method (SOP)
+                                </h3>
+
+                                <textarea wire:model="edit_method" rows="6"
+                                    class="w-full p-8 bg-gray-50 border-2 {{ $errors->has('edit_method') ? 'border-red-200' : 'border-gray-50' }} rounded-[1.5rem] text-sm font-medium text-gray-600 outline-none focus:border-[#f97316] focus:bg-white transition-all resize-none shadow-inner"
+                                    placeholder="Step 1: Preparation... Step 2: Cooking process..."></textarea>
+
+                                @error('edit_method')
+                                    <span
+                                        class="text-red-500 text-[10px] font-bold italic mt-2 block ml-2">{{ $message }}</span>
+                                @enderror
+
+                                <button wire:click="saveSOP" wire:loading.attr="disabled"
+                                    class="w-full mt-6 bg-[#1a1a1a] hover:bg-black text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all cursor-pointer shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 group">
+
+                                    <div wire:loading.remove wire:target="saveSOP" class="flex items-center gap-2">
+                                        <x-lucide-check-circle
+                                            class="w-4 h-4 text-green-400 group-hover:scale-125 transition-transform" />
+                                        <span>Save SOP Changes</span>
+                                    </div>
+
+                                    <div wire:loading wire:target="saveSOP" class="flex items-center gap-3">
+                                        <svg class="animate-spin h-4 w-4 text-orange-500" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4" fill="none"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                        <span>Recording SOP...</span>
+                                    </div>
+                                </button>
                             </div>
                         </div>
                     </div>

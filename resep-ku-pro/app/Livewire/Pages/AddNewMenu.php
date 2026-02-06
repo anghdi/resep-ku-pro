@@ -24,20 +24,20 @@ class AddNewMenu extends Component
     public $filter_outlet, $selected_recipe_id;
     public $edit_name, $edit_category, $edit_outlet, $update_photo, $edit_image_url;
     public $selected_ingredient, $amount_needed;
+    public $edit_method;
 
     /**
      * Otomatis memuat data saat resep dipilih di dropdown
      */
     public function updatedSelectedRecipeId($id)
     {
-        if (!$id) return $this->reset(['edit_name', 'edit_category', 'edit_outlet', 'edit_image_url']);
-
         $recipe = Recipes::find($id);
         if ($recipe) {
             $this->edit_name = $recipe->name;
             $this->edit_category = $recipe->category;
             $this->edit_outlet = $recipe->outlet;
             $this->edit_image_url = $recipe->image_url;
+            $this->edit_method = $recipe->method; // Load instruksi dari DB
         }
     }
 
@@ -186,7 +186,28 @@ class AddNewMenu extends Component
         'action' => $action,
         'details' => $details,
         'created_at' => now(),
-    ]);
-}
+        ]);
+    }
+
+    public function saveSOP()
+    {
+        $this->validate([
+            'edit_method' => 'required|min:10',
+        ]);
+
+        $recipe = Recipes::findOrFail($this->selected_recipe_id);
+        $recipe->update(['method' => $this->edit_method]);
+
+        DB::table('activity_logs')->insert([
+            'id' => (string) Str::uuid(),
+            'org_id' => auth()->user()->org_id,
+            'user_email' => auth()->user()->email,
+            'action' => 'Update SOP',
+            'details' => "Updated cooking method for recipe: {$recipe->name}",
+            'created_at' => now(),
+        ]);
+
+        session()->flash('success', 'Cooking Method updated successfully!');
+    }
 
 }
