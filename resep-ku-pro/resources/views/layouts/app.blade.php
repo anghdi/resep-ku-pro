@@ -7,6 +7,10 @@
 
     <title>{{ $title ?? config('app.name') }}</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('icon/chef-hat.png') }}">
+
+    <link rel="apple-touch-icon" href="{{ asset('icon/chef-hat.png') }}">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
@@ -53,8 +57,8 @@
                     </p>
                 </div>
 
-                <x-nav-link icon="layout-dashboard" label="Dashboard" :active="request()->routeIs('dashboard')" href="{{ route('dashboard') }}"
-                    wire:navigate />
+                <x-nav-link icon="layout-dashboard" label="Dashboard" :active="request()->routeIs('dashboard')"
+                    href="{{ route('dashboard') }}" wire:navigate />
 
                 <x-nav-link icon="utensils" label="Manage Ingredients" :active="request()->routeIs('ingredients.*')"
                     href="{{ route('ingredients.index') }}" wire:navigate />
@@ -62,36 +66,43 @@
                 <x-nav-link icon="tag" label="Manage Categories" :active="request()->routeIs('categories.*')"
                     href="{{ route('categories.index') }}" wire:navigate />
 
-                <x-nav-link icon="plus-circle" label="Add New Menu" :active="request()->routeIs('add-new-menu.*')" href="{{ route('add-new-menu') }}"
-                    wire:navigate />
+                <x-nav-link icon="plus-circle" label="Add New Menu" :active="request()->routeIs('add-new-menu.*')"
+                    href="{{ route('add-new-menu') }}" wire:navigate />
 
-                <x-nav-link icon="file-spreadsheet" label="Costing & SOP" :active="request()->routeIs('costing.*')" href="#"
-                    wire:navigate />
+                <x-nav-link icon="file-spreadsheet" label="Costing & SOP" :active="request()->routeIs('costing.*')"
+                    href="#" wire:navigate />
 
                 @role(['owner', 'manager'])
-                    <div class="px-6 pt-6 pb-2">
-                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{{ __('Management') }}
-                        </p>
-                    </div>
+                <div class="px-6 pt-6 pb-2">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{{ __('Management') }}
+                    </p>
+                </div>
 
-                    <x-nav-link icon="settings" label="Management Center" :active="request()->routeIs('management-center')"
-                        href="{{ route('management-center') }}" wire:navigate />
+                <x-nav-link icon="settings" label="Management Center" :active="request()->routeIs('management-center')"
+                    href="{{ route('management-center') }}" wire:navigate />
                 @endrole
 
                 @role('owner')
-                    <x-nav-link icon="history" label="Activity Logs" :active="request()->routeIs('activity-logs.*')" href="{{ route('activity.logs') }}"
-                        wire:navigate />
-                    <x-nav-link icon="shield-check" label="Access Control" :active="request()->routeIs('access-control')"
-                        href="{{ route('access-control') }}" wire:navigate />
+                <x-nav-link icon="history" label="Activity Logs" :active="request()->routeIs('activity-logs.*')"
+                    href="{{ route('activity.logs') }}" wire:navigate />
+                <x-nav-link icon="shield-check" label="Access Control" :active="request()->routeIs('access-control')"
+                    href="{{ route('access-control') }}" wire:navigate />
                 @endrole
             </nav>
 
             <div class="p-4 border-t border-gray-50">
-                <button
+
+                <a href="{{ route('logout') }}"
                     class="w-full flex items-center justify-center gap-3 p-3.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all font-black uppercase text-[10px] tracking-widest cursor-pointer group">
                     <x-lucide-log-out class="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                     {{ __('Sign Out') }}
-                </button>
+                </a>
+
+                <!-- <button
+                    class="w-full flex items-center justify-center gap-3 p-3.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all font-black uppercase text-[10px] tracking-widest cursor-pointer group">
+                    <x-lucide-log-out class="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                    {{ __('Sign Out') }}
+                </button> -->
             </div>
         </aside>
 
@@ -112,7 +123,8 @@
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden sm:block">
                         <p class="text-[10px] font-black uppercase tracking-widest text-[#f97316]">
-                            {{ auth()->user()->role ?? 'Owner' }}</p>
+                            {{ auth()->user()->role ?? 'Owner' }}
+                        </p>
                         <p class="text-sm font-bold text-gray-800">{{ auth()->user()->full_name }}</p>
                     </div>
                     <div

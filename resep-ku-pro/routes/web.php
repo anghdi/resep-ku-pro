@@ -29,15 +29,7 @@ Route::prefix('auth/google')->group(function () {
     Route::get('/callback', [GoogleController::class, 'callback'])->name('google.callback');
 });
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-//     Route::get('/complete-profile', CompleteProfile::class)->name('complete-profile');
-//     Route::get('/management-center', ManagementCenter::class)->name('management-center');
-//     Route::get('/ingredients', IngredientsMaster::class)->name('ingredients.index');
-//     Route::get('/activity-logs', ActivityLogs::class)->name('activity.logs');
-// });
-
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/complete-profile', CompleteProfile::class)->name('complete-profile');
     Route::get('/management-center', ManagementCenter::class)->name('management-center');
@@ -46,6 +38,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/access-control', AccessControl::class)->name('access-control');
     Route::get('/add-new-menu', AddNewMenu::class)->name('add-new-menu');
     Route::get('/categories', Category::class)->name('categories.index');
+    Route::get('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login');
+    })->name('logout');
 });
 
 // 4. Default Route (Kirim ke Login)

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('org_id')->nullable();
             $table->string('role')->nullable();
-            $table->string('full_name');
+            $table->string('full_name')->nullable();
             $table->string('email')->unique();
             $table->string('password')->nullable(); // Nullable untuk user Google
             $table->string('google_id')->nullable();

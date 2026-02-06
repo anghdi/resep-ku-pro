@@ -8,12 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\Permission\Traits\HasRoles;
-class User extends Authenticatable
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasUuids;
     use HasRoles;
+    use Notifiable;
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    protected $guard_name = 'web';
 
     /**
      * The attributes that are mass assignable.
@@ -21,17 +24,11 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'full_name',
         'email',
         'password',
-        'role',
+        'role', // Siapkan kolom role
         'org_id',
-        'google_id',
-        'avatar',
-        'status',
-        'is_superadmin',       // Bahan baru
-        'subscription_until',  // Bahan baru
-        'outlet',              // Bahan baru
+        'full_name'
     ];
 
     /**

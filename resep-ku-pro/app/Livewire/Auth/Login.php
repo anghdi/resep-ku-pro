@@ -12,15 +12,24 @@ class Login extends Component
     public function login()
     {
         $this->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+        'email' => 'required|email',
+        'password' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+        if (auth()->attempt(['email' => $this->email, 'password' => $this->password])) {
+            session()->regenerate(); // Wajib agar session tidak stuck
+
+            $user = auth()->user();
+
+            // Cek apakah user punya role (Spatie)
+            if ($user->roles()->count() === 0) {
+                return redirect()->intended(default: '/complete-profile');
+            }
+
             return redirect()->intended('/dashboard');
         }
 
-        session()->flash('error', __('Invalid credentials.'));
+        session()->flash('error', 'Credentials mismatch.');
     }
     public function render()
     {

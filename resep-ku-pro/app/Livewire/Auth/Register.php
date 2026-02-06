@@ -11,38 +11,28 @@ use Laravel\Socialite\Facades\Socialite;
 class Register extends Component
 {
 
-    public $full_name, $role, $email, $password, $brand_name, $team_org_id;
-
-    protected function rules()
-    {
-        return [
-            'full_name' => 'required|min:3',
-            'role'      => 'required|in:owner,manager,staff',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'required|min:8',
-            'brand_name'  => $this->role === 'owner' ? 'required|min:3' : 'nullable',
-            'team_org_id' => in_array($this->role, ['manager', 'staff']) ? 'required' : 'nullable',
-        ];
-    }
+    public $email, $password, $password_confirmation;
 
     public function register()
     {
-        // Sekarang cukup panggil satu kali tanpa argumen
-        $validatedData = $this->validate();
-        // dd($validatedData);
-
-        $user = User::create([
-            'full_name' => $this->full_name,
-            'email'     => $this->email,
-            'password'  => Hash::make($this->password),
-            'org_id'    => $this->role === 'owner' ? $this->brand_name : $this->team_org_id,
-            'status'    => 'active',
+        $this->validate([
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
         ]);
 
-        $user->assignRole($this->role);
+        $user = User::create([
+            'email' => $this->email,
+            'password' => Hash::make($this->password),
+            'role' => null,   // Masih kosong
+            'org_id' => null, // Belum punya organisasi
+        ]);
 
-        session()->flash('success', 'Account successfully created!');
-        return redirect()->route('login');
+        // Kirim email verifikasi (logic-nya sudah ada di Laravel, tinggal setting SMTP nanti)
+        // $user->sendEmailVerificationNotification();
+
+        Auth::login($user);
+
+        return redirect()->route('complete-profile');
     }
 
     public function setLocale($lang) {

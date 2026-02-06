@@ -19,23 +19,19 @@
             </div>
             <div class="relative z-10 p-10 flex flex-col justify-center items-center text-center text-white h-full">
                 <h2 class="text-4xl font-black italic leading-tight drop-shadow-lg uppercase tracking-tighter">
-                    {{ __('Dive into the World of Recipes') }}
-                </h2>
+                    {{ __('Dive into the World of Recipes') }}</h2>
                 <p class="mt-6 text-sm font-medium leading-relaxed max-w-xs drop-shadow-md text-orange-50">
-                    {{ __('Discover fun, interactive recipes that spark your culinary imagination.') }}
-                </p>
+                    {{ __('Discover fun, interactive recipes that spark your culinary imagination.') }}</p>
             </div>
         </div>
 
         <div class="w-full md:w-[55%] p-8 md:p-12 bg-white flex flex-col justify-center relative">
-
             <div class="text-center md:text-left mb-8">
                 <div class="flex items-center justify-center md:justify-start gap-2 mb-1">
                     <h1 class="text-3xl font-black text-[#d4af37] tracking-tighter">ResepKuPro</h1>
                 </div>
                 <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] ml-1 italic">
-                    {{ __('Professional Kitchen System') }}
-                </p>
+                    {{ __('Professional Kitchen System') }}</p>
             </div>
 
             <div class="mb-8 relative text-center md:text-left">
@@ -46,9 +42,9 @@
                     {{ __('Please enter your details to stay cooking.') }}</p>
             </div>
 
-            @if (session()->has('success'))
-                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-xl border-l-4 border-green-500">
-                    {{ session('success') }}
+            @if (session()->has('error'))
+                <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-xl border-l-4 border-red-500 italic font-bold">
+                    {{ session('error') }}
                 </div>
             @endif
 
@@ -57,8 +53,10 @@
                     <label
                         class="block text-[10px] font-extrabold text-gray-800 uppercase tracking-widest mb-1.5 ml-1">{{ __('Email address') }}</label>
                     <input type="email" wire:model="email"
-                        class="w-full px-5 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700 placeholder-gray-400"
+                        class="w-full px-5 py-3 bg-gray-50 border-2 {{ $errors->has('email') ? 'border-red-300' : 'border-gray-100' }} rounded-xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700 placeholder-gray-400"
                         placeholder="chef@resepku.com">
+                    @error('email') <span class="text-red-500 text-[10px] font-bold italic ml-2">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div>
@@ -66,22 +64,24 @@
                         class="block text-[10px] font-extrabold text-gray-800 uppercase tracking-widest mb-1.5 ml-1">{{ __('Password') }}</label>
                     <div class="relative">
                         <input type="password" wire:model="password"
-                            class="w-full px-5 py-3 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700">
+                            class="w-full px-5 py-3 bg-gray-50 border-2 {{ $errors->has('password') ? 'border-red-300' : 'border-gray-100' }} rounded-2xl focus:bg-white focus:border-[#f97316] outline-none transition-all text-sm font-medium text-gray-700">
                         <x-lucide-eye-off
                             class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 cursor-pointer hover:text-[#f97316] transition-colors" />
                     </div>
+                    @error('password') <span
+                    class="text-red-500 text-[10px] font-bold italic ml-2">{{ $message }}</span> @enderror
                 </div>
 
-                <button type="submit"
+                <button type="submit" wire:loading.attr="disabled"
                     class="w-full bg-gradient-to-r from-[#f97316] to-orange-600 hover:shadow-orange-200/80 text-white font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-[0.2em] text-sm transform active:scale-[0.97] mt-2">
-                    {{ __('Login') }}
+                    <span wire:loading.remove wire:target="login">{{ __('Login') }}</span>
+                    <span wire:loading wire:target="login">{{ __('Checking...') }}</span>
                 </button>
             </form>
 
             <div class="flex items-center my-6 text-gray-100 relative z-10">
                 <div class="flex-grow border-t-2 border-gray-100 rounded-full"></div>
-                <span
-                    class="px-3 text-[9px] font-black uppercase tracking-widest text-gray-300">{{ __('Or') }}</span>
+                <span class="px-3 text-[9px] font-black uppercase tracking-widest text-gray-300">{{ __('Or') }}</span>
                 <div class="flex-grow border-t-2 border-gray-100 rounded-full"></div>
             </div>
 
