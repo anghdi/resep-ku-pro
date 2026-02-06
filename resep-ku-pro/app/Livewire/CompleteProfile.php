@@ -31,6 +31,9 @@ class CompleteProfile extends Component
             'brand_name' => $this->role === 'owner' ? $this->brand_name : null,
             'status'     => 'active',
         ]);
+
+        return redirect()->intended('/dashboard');
+
     }
 
     public function render()
