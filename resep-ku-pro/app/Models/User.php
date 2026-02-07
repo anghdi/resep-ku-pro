@@ -53,4 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_superadmin' => 'boolean',     // Pastikan ini dibaca sebagai true/false
         'subscription_until' => 'datetime', // Otomatis jadi objek Carbon
     ];
+
+    public function permissions()
+    {
+        return $this->hasMany(UserPermission::class, 'user_id');
+    }
 }

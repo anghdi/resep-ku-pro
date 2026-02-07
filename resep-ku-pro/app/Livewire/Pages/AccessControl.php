@@ -14,86 +14,92 @@ class AccessControl extends Component
     use WithPagination;
 
     public $search = '';
-    public $modules = ['Ingredients', 'Recipes', 'Activity Logs', 'Management'];
+
+    /**
+     * Definisi Modul & Label (Disesuaikan dengan Sidebar Chef)
+     */
+    public $modules = [
+        'ingredients' => 'Manage Ingredients',
+        'categories'  => 'Manage Categories',
+        'menus'       => 'Add New Menu',
+        'management'  => 'Management Center',
+    ];
 
     public function mount()
     {
-        /**
-         * PROTEKSI OWNER:
-         * Pastikan kolom 'role' di tabel users koki isinya 'owner'.
-         */
-        // if (auth()->user()->role !== 'owner') {
-        //     abort(403, 'Unauthorized. This area is for Owners only!');
-        // }
+        // Proteksi Owner aktifkan jika sudah masuk tahap production
+        if (auth()->user()->role !== 'owner') {
+            abort(403, 'Unauthorized. Access restricted to Owners only.');
+        }
     }
 
     public function updatingSearch() { $this->resetPage(); }
 
-    /**
-     * TOGGLE PERMISSION (Create/Update Logic)
-     */
     public function togglePermission($userId, $module, $field)
     {
-        $user = User::findOrFail($userId);
+        dd("Masuk");
+        try {
+            $user = User::findOrFail($userId);
 
-        // CRUD Logic: updateOrCreate
-        $permission = UserPermission::updateOrCreate(
-            ['user_id' => $userId, 'module' => $module],
-            ['org_id' => auth()->user()->org_id]
-        );
+            // 1. Update data izin
+            $permission = UserPermission::updateOrCreate(
+                ['user_id' => $userId, 'module' => $module],
+                ['org_id' => auth()->user()->org_id]
+            );
 
-        $newValue = !$permission->$field;
-        $permission->update([$field => $newValue]);
+            $newValue = !$permission->$field;
+            $permission->update([$field => $newValue]);
 
-        // CCTV Logging
-        $this->writeLog('Update Permission', "Changed {$field} to " . ($newValue ? 'ENABLED' : 'DISABLED') . " for {$user->email} on module {$module}");
+            $this->writeLog(
+                'Update Permission',
+                "Changed access " . strtoupper(str_replace('can_', '', $field)) . " to " . ($newValue ? 'ENABLED' : 'DISABLED') . " for {$user->email} on module {$module}"
+            );
 
-        session()->flash('success', "Permission for {$user->name} updated successfully!");
+            session()->flash('success', "Access updated!");
+
+        } catch (\Exception $e) {
+            // Jika ada error (misal: kolom tabel log tidak cocok), akan muncul di sini
+            session()->flash('error', "Failed to log activity: " . $e->getMessage());
+        }
     }
 
     /**
-     * RESET PERMISSIONS (Delete Logic)
+     * RESET PERMISSIONS (Cabut Semua Akses)
      */
     public function resetPermissions($userId)
     {
         $user = User::findOrFail($userId);
         UserPermission::where('user_id', $userId)->delete();
 
-        $this->writeLog('Reset Permission', "All permissions for {$user->email} have been revoked");
-        session()->flash('success', "All permissions for {$user->name} have been reset.");
+        $this->writeLog('Reset Permission', "All access rights for {$user->email} have been revoked");
+        session()->flash('success', "Permissions for {$user->email} have been reset to default.");
     }
 
     private function writeLog($action, $details)
     {
-        DB::table('activity_logs')->insert([
-            'id' => (string) Str::uuid(),
-            'org_id' => auth()->user()->org_id,
+            DB::table('activity_logs')->insert([
+            'id'         => (string) Str::uuid(),
+            'org_id'     => auth()->user()->org_id,
             'user_email' => auth()->user()->email,
-            'action' => $action,
-            'details' => $details,
+            'action'     => $action,
+            'details'    => $details,
             'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 
     public function render()
     {
         $query = User::where('org_id', auth()->user()->org_id)
-            ->where('id', '!=', auth()->id());
+        ->where('id', '!=', auth()->id());
 
-        // Hanya jalankan REGEXP jika $search tidak kosong
+        // Filter pencarian
         $query->when($this->search, function ($q) {
-            try {
-                $q->where('email', 'REGEXP', $this->search);
-            } catch (\Exception $e) {
-                // Jika user ngetik regex yang salah (misal: cuma ngetik '[' )
-                // kita fallback ke pencarian LIKE biasa agar tidak error
-                $q->where('email', 'LIKE', '%' . $this->search . '%');
-            }
+            $q->where('email', 'LIKE', '%' . $this->search . '%');
         });
 
         return view('livewire.pages.access-control', [
-            'staffList' => $query->paginate(10),
-            'allPermissions' => UserPermission::where('org_id', auth()->user()->org_id)->get()
+            'staffList' => $query->with('permissions')->paginate(10),
         ])->layout('layouts.app');
     }
 }

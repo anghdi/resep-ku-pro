@@ -1,73 +1,86 @@
-<div class="p-6 md:p-10 bg-[#f8f9fa] min-h-screen">
-    <div class="max-w-7xl mx-auto space-y-6">
+<div class="p-6 md:p-10 bg-[#f8f9fa] min-h-screen font-sans">
+    <div class="max-w-7xl mx-auto space-y-8">
 
-        @if (session()->has('success'))
-            <div class="bg-[#10b981] text-white px-6 py-4 rounded-2xl font-bold text-sm shadow-lg flex items-center justify-between animate-bounce">
-                <div class="flex items-center gap-3">
-                    <x-lucide-check-circle class="w-5 h-5" />
-                    {{ session('success') }}
-                </div>
-                <button @click="open = false" class="cursor-pointer opacity-50 hover:opacity-100">×</button>
+        <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100">
+            <div>
+                <h1 class="text-2xl font-black text-gray-800 uppercase tracking-tighter flex items-center gap-3">
+                    <x-lucide-shield-check class="w-8 h-8 text-[#f97316]" /> Access Control
+                </h1>
+                <p class="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Manage Staff Permissions</p>
             </div>
-        @endif
-
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h1 class="text-xl font-black text-gray-800 tracking-tight flex items-center gap-3">
-                <x-lucide-shield-check class="w-6 h-6 text-[#d4af37]" /> Access Control
-            </h1>
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Regex Search staff email..."
-                   class="w-full md:w-80 pl-6 pr-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm outline-none focus:border-[#d4af37] text-sm font-medium">
+            <div class="relative w-full md:w-80">
+                <input type="text" wire:model.live="search" placeholder="Search staff email..."
+                    class="w-full pl-12 pr-6 py-3 bg-gray-50 border-2 border-gray-50 rounded-2xl text-sm font-bold outline-none focus:border-orange-400 focus:bg-white transition-all">
+                <x-lucide-search class="absolute left-4 top-3.5 w-5 h-5 text-gray-300" />
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
-            @forelse($staffList as $user)
-                <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-gray-100 transition-all hover:shadow-md">
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-6">
+            @foreach ($staffList as $staff)
+                <div
+                    class="bg-white rounded-[2.5rem] shadow-sm border border-gray-50 p-8 hover:shadow-md transition-all group relative">
 
-                        <div class="flex items-center gap-4 min-w-[200px]">
-                            <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center font-black text-gray-400">
-                                {{ substr($user->name, 0, 1) }}
+                    <button wire:click="resetPermissions({{ $staff->id }})"
+                        wire:confirm="Are you sure you want to revoke all permissions for this user?"
+                        class="absolute top-8 right-8 p-3 bg-gray-50 hover:bg-red-50 text-gray-300 hover:text-red-500 rounded-xl transition-all cursor-pointer">
+                        <x-lucide-rotate-ccw class="w-5 h-5" />
+                    </button>
+
+                    <div class="flex flex-col lg:flex-row gap-10">
+                        <div class="flex items-center gap-5 min-w-[250px]">
+                            <div
+                                class="w-14 h-14 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl flex items-center justify-center font-black text-[#f97316] text-xl shadow-inner uppercase">
+                                {{ substr($staff->email, 0, 2) }}
                             </div>
                             <div>
-                                <h3 class="font-black text-gray-800 text-sm">{{ $user->name }}</h3>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase">{{ $user->email }}</p>
+                                <p class="text-sm font-black text-gray-800 break-all">{{ $staff->email }}</p>
+                                <span
+                                    class="px-3 py-1 bg-gray-100 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1 inline-block">{{ $staff->role }}</span>
                             </div>
                         </div>
 
-                        <div class="flex-1 overflow-x-auto pb-2">
-                            <div class="flex gap-3 min-w-max">
-                                @foreach($modules as $module)
-                                    @php $p = $allPermissions->where('user_id', $user->id)->where('module', $module)->first(); @endphp
-                                    <div class="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 min-w-[150px]">
-                                        <p class="text-[9px] font-black uppercase text-gray-400 mb-3 tracking-widest">{{ $module }}</p>
-                                        <div class="flex gap-1.5">
-                                            @foreach(['can_create' => 'C', 'can_read' => 'R', 'can_update' => 'U', 'can_delete' => 'D'] as $f => $l)
-                                                <button wire:click="togglePermission('{{ $user->id }}', '{{ $module }}', '{{ $f }}')"
-                                                        class="w-8 h-8 rounded-lg font-black text-[10px] cursor-pointer border transition-all
-                                                        {{ optional($p)->$f ? 'bg-[#10b981] border-[#10b981] text-white' : 'bg-white border-gray-200 text-gray-300 hover:text-gray-500' }}">
-                                                    {{ $l }}
-                                                </button>
-                                            @endforeach
-                                        </div>
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            @foreach ($modules as $modId => $modName)
+                                <div class="bg-gray-50/50 p-5 rounded-[1.5rem] border border-gray-100/30 space-y-4">
+                                    <label
+                                        class="text-[10px] font-black uppercase text-gray-400 tracking-[0.15em] block border-b border-orange-100/50 pb-2">
+                                        {{ $modName }}
+                                    </label>
+
+                                    <div class="space-y-3">
+                                        @foreach (['view' => 'View', 'add' => 'Add', 'edit' => 'Edit', 'remove' => 'Remove'] as $key => $label)
+                                            @php
+                                                // CARA BARU: Langsung cari di relasi staff tersebut
+                                                $dbField = 'can_' . $key;
+                                                $hasPerm = $staff->permissions->where('module', $modId)->first();
+                                                $isChecked = $hasPerm ? $hasPerm->$dbField : false;
+                                            @endphp
+
+                                            <label class="flex items-center gap-3 cursor-pointer group/perm">
+                                                <input type="checkbox"
+                                                    wire:click="togglePermission({{ $staff->id }}, '{{ $modId }}', '{{ $dbField }}')"
+                                                    {{ $isChecked ? 'checked' : '' }}
+                                                    class="w-5 h-5 rounded-lg border-2 border-gray-200 {{ $key == 'remove' ? 'text-red-500 focus:ring-red-500' : 'text-[#f97316] focus:ring-orange-500' }} transition-all cursor-pointer">
+
+                                                <span
+                                                    class="text-[11px] font-extrabold {{ $isChecked ? 'text-gray-900' : 'text-gray-400' }} {{ $key == 'remove' && $isChecked ? 'text-red-600' : '' }} uppercase transition-colors">
+                                                    {{ $label }}
+                                                </span>
+                                            </label>
+                                        @endforeach
                                     </div>
-                                @endforeach
-                            </div>
+                                </div>
+                            @endforeach
                         </div>
-
-                        <button wire:click="resetPermissions('{{ $user->id }}')"
-                                wire:confirm="Are you sure you want to revoke all access for this user?"
-                                class="p-3 text-gray-300 hover:text-red-500 transition-colors cursor-pointer" title="Reset All Permissions">
-                            <x-lucide-rotate-ccw class="w-5 h-5" />
-                        </button>
                     </div>
                 </div>
-            @empty
-                <div class="bg-white rounded-[2rem] p-20 text-center border-2 border-dashed border-gray-100">
-                    <p class="text-gray-400 italic">No staff members found.</p>
-                </div>
-            @endforelse
+            @endforeach
         </div>
 
-        <div class="mt-4">{{ $staffList->links() }}</div>
+        <div class="mt-8">
+            {{ $staffList->links() }}
+        </div>
+
     </div>
 </div>

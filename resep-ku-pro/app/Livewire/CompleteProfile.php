@@ -13,24 +13,33 @@ class CompleteProfile extends Component
 
     public function saveProfile()
     {
-        $this->validate([
-            'full_name'   => 'required|min:3',
-            'role'        => 'required|in:owner,manager,staff',
-            // Brand Name hanya wajib untuk Owner
-            'brand_name'  => 'required_if:role,owner|nullable|min:3',
-            // Team Org ID wajib untuk Manager/Staff dan harus terdaftar di DB
-            'team_org_id' => 'required_if:role,manager,staff|nullable|exists:users,org_id',
-        ], [
-            'team_org_id.exists' => 'The Team Org ID you entered is not registered in our system.',
-            'team_org_id.required_if' => 'Please enter the Org ID provided by your Owner.',
+        $rules = [
+            'full_name' => 'required|min:3',
+            'role'      => 'required|in:owner,manager,staff',
+        ];
+
+        if ($this->role === 'owner') {
+            // Owner wajib isi Brand Name
+            $rules['brand_name'] = 'required|min:3';
+        } else {
+            // Manager/Staff wajib isi Team Org ID dan harus ada di database
+            $rules['team_org_id'] = 'required|exists:users,org_id';
+        }
+
+        $this->validate($rules, [
+            'team_org_id.exists'      => 'The Team Org ID you entered is not registered.',
+            'team_org_id.required'    => 'Please enter the Org ID provided by your Owner.',
+            'brand_name.required'     => 'Please enter your restaurant/brand name.',
         ]);
 
         $user = auth()->user();
 
-        // Jika Owner, buat ID baru. Jika Manager/Staff, gunakan ID yang di-paste.
-        $finalOrgId = ($this->role === 'owner')
-            ? 'ORG-' . strtoupper(\Illuminate\Support\Str::random(6))
-            : $this->team_org_id;
+        // 2. Tentukan Org ID
+        if ($this->role === 'owner') {
+            $finalOrgId = $this->team_org_id ?: 'ORG-' . strtoupper(\Illuminate\Support\Str::random(6));
+        } else {
+            $finalOrgId = $this->team_org_id;
+        }
 
         try {
             $user->update([
@@ -41,15 +50,14 @@ class CompleteProfile extends Component
                 'status'     => 'active',
             ]);
 
-            // Opsional: Spatie Role (jika digunakan)
             if (method_exists($user, 'assignRole')) {
                 $user->assignRole($this->role);
             }
 
-            return redirect()->intended('/dashboard');
+            return redirect()->to('/dashboard');
 
         } catch (\Exception $e) {
-            session()->flash('error', 'Something went wrong while saving your profile.');
+            session()->flash('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
 
