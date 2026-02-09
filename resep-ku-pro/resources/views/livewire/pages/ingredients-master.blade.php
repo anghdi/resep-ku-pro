@@ -1,6 +1,20 @@
 <div class="p-6 md:p-10 bg-[#f8f9fa] min-h-screen animate-fade-in">
     <div class="max-w-7xl mx-auto space-y-6">
+        @if (session()->has('success'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+                class="flex items-center p-4 bg-green-50 border-l-4 border-green-500 rounded-xl shadow-lg transition-all duration-500">
+                <x-lucide-check-circle class="w-5 h-5 text-green-500 mr-3" />
+                <p class="text-xs font-black text-green-800 uppercase tracking-tight">{{ session('success') }}</p>
+            </div>
+        @endif
 
+        @if (session()->has('error'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                class="flex items-center p-4 bg-red-50 border-l-4 border-red-500 rounded-xl shadow-lg">
+                <x-lucide-alert-triangle class="w-5 h-5 text-red-500 mr-3" />
+                <p class="text-xs font-black text-red-800 uppercase tracking-tight">{{ session('error') }}</p>
+            </div>
+        @endif
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
             <div class="flex items-center gap-3 mb-8">
                 <x-lucide-leaf class="w-5 h-5 text-[#d4af37]" />

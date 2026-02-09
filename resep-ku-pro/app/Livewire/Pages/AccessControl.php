@@ -37,7 +37,6 @@ class AccessControl extends Component
 
     public function togglePermission($userId, $module, $field)
     {
-        dd("Masuk");
         try {
             $user = User::findOrFail($userId);
 

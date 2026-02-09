@@ -45,6 +45,16 @@ class ManagementCenter extends Component
 
     public function saveOutlet()
     {
+        if (!auth()->user()->hasAccess('management', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('management', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to update.');
+            return;
+        }
+
         $this->validate();
 
         try {
@@ -62,8 +72,13 @@ class ManagementCenter extends Component
 
     public function deleteOutlet($id)
     {
+        if (!auth()->user()->hasAccess('management', 'delete')) {
+            session()->flash('error', 'Access Denied: You do not have permission to delete.');
+            return;
+        }
+
         Outlets::find($id)->delete();
-        session()->flash('success', 'Outlet telah dihapus.');
+        session()->flash('success', 'Outlet successfully deleted');
     }
 
     public function editOutlet($id)

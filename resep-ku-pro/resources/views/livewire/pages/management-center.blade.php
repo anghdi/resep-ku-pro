@@ -81,7 +81,7 @@
                                 </button>
 
                                 <button wire:click="deleteOutlet('{{ $outlet->id }}')"
-                                    wire:confirm="Yakin hapus outlet ini?"
+                                    wire:confirm="Are you sure you want to delete this outlet?"
                                     class="p-2 text-gray-300 hover:text-red-500 cursor-pointer transition-colors">
                                     <x-lucide-trash-2 class="w-4 h-4" />
                                 </button>

@@ -57,36 +57,44 @@
                     </p>
                 </div>
 
-                <x-nav-link icon="layout-dashboard" label="Dashboard" :active="request()->routeIs('dashboard')"
-                    href="{{ route('dashboard') }}" wire:navigate />
+                <x-nav-link icon="layout-dashboard" label="Dashboard" :active="request()->routeIs('dashboard')" href="{{ route('dashboard') }}"
+                    wire:navigate />
 
-                <x-nav-link icon="utensils" label="Manage Ingredients" :active="request()->routeIs('ingredients.*')"
-                    href="{{ route('ingredients.index') }}" wire:navigate />
+                @if (auth()->user()->hasAccess('ingredients', 'view'))
+                    <x-nav-link icon="utensils" label="Manage Ingredients" :active="request()->routeIs('ingredients.*')"
+                        href="{{ route('ingredients.index') }}" wire:navigate />
+                @endif
 
-                <x-nav-link icon="tag" label="Manage Categories" :active="request()->routeIs('categories.*')"
-                    href="{{ route('categories.index') }}" wire:navigate />
+                @if (auth()->user()->hasAccess('categories', 'view'))
+                    <x-nav-link icon="tag" label="Manage Categories" :active="request()->routeIs('categories.*')"
+                        href="{{ route('categories.index') }}" wire:navigate />
+                @endif
 
-                <x-nav-link icon="plus-circle" label="Add New Menu" :active="request()->routeIs('add-new-menu.*')"
-                    href="{{ route('add-new-menu') }}" wire:navigate />
+                @if (auth()->user()->hasAccess('menus', 'view'))
+                    <x-nav-link icon="plus-circle" label="Add New Menu" :active="request()->routeIs('add-new-menu.*')"
+                        href="{{ route('add-new-menu') }}" wire:navigate />
 
-                <x-nav-link icon="file-spreadsheet" label="Costing & SOP" :active="request()->routeIs('costing.*')"
-                    href="#" wire:navigate />
+                    <x-nav-link icon="file-spreadsheet" label="Costing & SOP" :active="request()->routeIs('costing-analysis')" href="{{ route('costing-analysis') }}"
+                        wire:navigate />
+                @endif
 
-                @role(['owner', 'manager'])
-                <div class="px-6 pt-6 pb-2">
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{{ __('Management') }}
-                    </p>
-                </div>
 
-                <x-nav-link icon="settings" label="Management Center" :active="request()->routeIs('management-center')"
-                    href="{{ route('management-center') }}" wire:navigate />
-                @endrole
+                @if (auth()->user()->hasAccess('management', 'view') || auth()->user()->role === 'owner')
+                    <div class="px-6 pt-6 pb-2">
+                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                            {{ __('Management') }}</p>
+                    </div>
+
+                    <x-nav-link icon="settings" label="Management Center" :active="request()->routeIs('management-center')"
+                        href="{{ route('management-center') }}" wire:navigate />
+                @endif
 
                 @role('owner')
-                <x-nav-link icon="history" label="Activity Logs" :active="request()->routeIs('activity-logs.*')"
-                    href="{{ route('activity.logs') }}" wire:navigate />
-                <x-nav-link icon="shield-check" label="Access Control" :active="request()->routeIs('access-control')"
-                    href="{{ route('access-control') }}" wire:navigate />
+                    <x-nav-link icon="history" label="Activity Logs" :active="request()->routeIs('activity-logs')" href="{{ route('activity-logs') }}"
+                        wire:navigate />
+
+                    <x-nav-link icon="shield-check" label="Access Control" :active="request()->routeIs('access-control')"
+                        href="{{ route('access-control') }}" wire:navigate />
                 @endrole
             </nav>
 

@@ -40,6 +40,17 @@ class IngredientsMaster extends Component
 
     public function save()
     {
+
+        if (!auth()->user()->hasAccess('ingredients', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new ingredients.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('ingredients', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to update ingredients.');
+            return;
+        }
+
         $this->validate();
 
         $isNew = !$this->is_editing;
@@ -85,6 +96,12 @@ class IngredientsMaster extends Component
 
     public function delete($id)
     {
+
+        if (!auth()->user()->hasAccess('ingredients', 'delete')) {
+            session()->flash('error', 'Access Denied: You do not have permission to delete ingredients.');
+            return;
+        }
+
         $item = Ingredients::find($id);
         if ($item) {
             $name = $item->name;

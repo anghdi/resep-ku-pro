@@ -34,6 +34,17 @@ class Category extends Component
 
     public function save()
     {
+
+        if (!auth()->user()->hasAccess('categories', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new categories.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('categories', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to update categories.');
+            return;
+        }
+
         $this->validate();
 
         if ($this->is_editing) {
@@ -62,6 +73,11 @@ class Category extends Component
 
     public function delete($id)
     {
+        if (!auth()->user()->hasAccess('categories', 'delete')) {
+            session()->flash('error', 'Access Denied: You do not have permission to delete categories.');
+            return;
+        }
+
         $cat = \App\Models\Category::findOrFail($id);
         $name = $cat->name;
         $cat->delete();

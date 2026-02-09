@@ -58,4 +58,25 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserPermission::class, 'user_id');
     }
+
+    public function hasAccess($module, $action)
+    {
+        if ($this->role === 'owner') return true;
+
+        // Cari data izin untuk modul tertentu
+        $permission = $this->permissions->where('module', $module)->first();
+
+        if (!$permission) return false;
+
+        // Mapping aksi ke nama kolom database koki
+        $column = match($action) {
+            'view'   => 'can_read',
+            'add'    => 'can_create',
+            'edit'   => 'can_update',
+            'remove' => 'can_delete',
+            default  => null
+        };
+
+        return $column ? (bool) $permission->$column : false;
+    }
 }

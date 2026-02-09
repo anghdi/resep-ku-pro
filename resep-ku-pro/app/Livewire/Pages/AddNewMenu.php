@@ -43,6 +43,17 @@ class AddNewMenu extends Component
 
     public function saveRecipe()
     {
+
+        if (!auth()->user()->hasAccess('menus', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('menus', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
         $this->validate([
             'menu_name' => 'required|min:3',
             'selling_price' => 'required|numeric',
@@ -72,6 +83,17 @@ class AddNewMenu extends Component
 
     public function addIngredient()
     {
+
+        if (!auth()->user()->hasAccess('menus', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('menus', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
         $this->validate(['selected_ingredient' => 'required', 'amount_needed' => 'required|numeric']);
 
         RecipeIngredient::create([
@@ -98,6 +120,16 @@ class AddNewMenu extends Component
 
     public function updateInfo()
     {
+        if (!auth()->user()->hasAccess('menus', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('menus', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
         $this->validate([
             'edit_name' => 'required|min:3',
             'edit_category' => 'required',
@@ -127,6 +159,15 @@ class AddNewMenu extends Component
 
     public function duplicateRecipe()
     {
+        if (!auth()->user()->hasAccess('menus', 'add')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
+
+        if (!auth()->user()->hasAccess('menus', 'edit')) {
+            session()->flash('error', 'Access Denied: You do not have permission to add new menus.');
+            return;
+        }
         $original = Recipes::findOrFail($this->selected_recipe_id);
 
         $newRecipe = $original->replicate();
@@ -164,6 +205,11 @@ class AddNewMenu extends Component
 
     public function deleteRecipe()
     {
+        if (!auth()->user()->hasAccess('menus', 'delete')) {
+            session()->flash('error', 'Access Denied: You do not have permission to delete menus.');
+            return;
+        }
+
         $recipe = Recipes::findOrFail($this->selected_recipe_id);
         $name = $recipe->name;
 

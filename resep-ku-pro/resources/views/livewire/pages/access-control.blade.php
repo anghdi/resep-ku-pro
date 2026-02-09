@@ -49,38 +49,52 @@
                                     </label>
 
                                     <div class="space-y-3">
-                                        @foreach (['view' => 'View', 'add' => 'Add', 'edit' => 'Edit', 'remove' => 'Remove'] as $key => $label)
-                                            @php
-                                                // CARA BARU: Langsung cari di relasi staff tersebut
-                                                $dbField = 'can_' . $key;
-                                                $hasPerm = $staff->permissions->where('module', $modId)->first();
-                                                $isChecked = $hasPerm ? $hasPerm->$dbField : false;
-                                            @endphp
+                                    @php
+                                        // 1. SESUAIKAN KEY DENGAN NAMA KOLOM DB (read, create, update, delete)
+                                        $permissionMap = [
+                                            'read' => 'View',
+                                            'create' => 'Add',
+                                            'update' => 'Edit',
+                                            'delete' => 'Remove',
+                                        ];
+                                    @endphp
 
-                                            <label class="flex items-center gap-3 cursor-pointer group/perm">
-                                                <input type="checkbox"
-                                                    wire:click="togglePermission({{ $staff->id }}, '{{ $modId }}', '{{ $dbField }}')"
-                                                    {{ $isChecked ? 'checked' : '' }}
-                                                    class="w-5 h-5 rounded-lg border-2 border-gray-200 {{ $key == 'remove' ? 'text-red-500 focus:ring-red-500' : 'text-[#f97316] focus:ring-orange-500' }} transition-all cursor-pointer">
+                                    @foreach ($permissionMap as $key => $label)
+                                        @php
+                                            // Menghasilkan can_read, can_create, can_update, can_delete
+                                            $dbField = 'can_' . $key;
+                                            $hasPerm = $staff->permissions->where('module', $modId)->first();
 
-                                                <span
-                                                    class="text-[11px] font-extrabold {{ $isChecked ? 'text-gray-900' : 'text-gray-400' }} {{ $key == 'remove' && $isChecked ? 'text-red-600' : '' }} uppercase transition-colors">
-                                                    {{ $label }}
-                                                </span>
-                                            </label>
-                                        @endforeach
-                                    </div>
+                                            // Pastikan casting ke boolean agar checked-nya akurat
+                                            $isChecked = $hasPerm ? (bool) $hasPerm->$dbField : false;
+                                        @endphp
+
+                                        <label
+                                            wire:key="perm-{{ $staff->id }}-{{ $modId }}-{{ $key }}"
+                                            class="flex items-center gap-3 cursor-pointer group/perm">
+                                            <input type="checkbox" {{-- 2. TAMBAHKAN TANDA PETIK DI ID STAFF (UUID FIX) --}}
+                                                wire:click="togglePermission('{{ $staff->id }}', '{{ $modId }}', '{{ $dbField }}')"
+                                                {{ $isChecked ? 'checked' : '' }}
+                                                class="w-5 h-5 rounded-lg border-2 border-gray-200 text-[#f97316] focus:ring-orange-500 cursor-pointer transition-all">
+
+                                            <span
+                                                class="text-[11px] font-extrabold {{ $isChecked ? 'text-gray-900' : 'text-gray-400' }} {{ $key == 'delete' && $isChecked ? 'text-red-600' : '' }} uppercase transition-colors">
+                                                {{ $label }}
+                                            </span>
+                                        </label>
+                                    @endforeach
                                 </div>
-                            @endforeach
                         </div>
-                    </div>
-                </div>
             @endforeach
         </div>
-
-        <div class="mt-8">
-            {{ $staffList->links() }}
-        </div>
-
     </div>
+</div>
+@endforeach
+</div>
+
+<div class="mt-8">
+    {{ $staffList->links() }}
+</div>
+
+</div>
 </div>

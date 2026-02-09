@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Pages\Category;
+use App\Livewire\Pages\CostingAnalysis;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Livewire\Auth\Login;
@@ -34,10 +35,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/complete-profile', CompleteProfile::class)->name('complete-profile');
     Route::get('/management-center', ManagementCenter::class)->name('management-center');
     Route::get('/ingredients', IngredientsMaster::class)->name('ingredients.index');
-    Route::get('/activity-logs', ActivityLogs::class)->name('activity.logs');
+    Route::get('/activity-logs', ActivityLogs::class)->name('activity-logs');
     Route::get('/access-control', AccessControl::class)->name('access-control');
     Route::get('/add-new-menu', AddNewMenu::class)->name('add-new-menu');
     Route::get('/categories', Category::class)->name('categories.index');
+    Route::get('/costing-analysis', CostingAnalysis::class)->name('costing-analysis');
     Route::get('/logout', function () {
         Auth::logout();
         request()->session()->invalidate();

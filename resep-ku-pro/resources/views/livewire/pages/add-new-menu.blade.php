@@ -2,9 +2,18 @@
     <div class="max-w-7xl mx-auto space-y-10">
 
         @if (session()->has('success'))
-            <div class="bg-green-500 text-white p-4 rounded-xl font-bold mb-6 flex justify-between items-center">
-                <span>{{ session('success') }}</span>
-                <button onclick="this.parentElement.remove()" class="cursor-pointer">✕</button>
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+                class="flex items-center p-4 bg-green-50 border-l-4 border-green-500 rounded-xl shadow-lg transition-all duration-500">
+                <x-lucide-check-circle class="w-5 h-5 text-green-500 mr-3" />
+                <p class="text-xs font-black text-green-800 uppercase tracking-tight">{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if (session()->has('error'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+                class="flex items-center p-4 bg-red-50 border-l-4 border-red-500 rounded-xl shadow-lg">
+                <x-lucide-alert-triangle class="w-5 h-5 text-red-500 mr-3" />
+                <p class="text-xs font-black text-red-800 uppercase tracking-tight">{{ session('error') }}</p>
             </div>
         @endif
 
@@ -126,7 +135,8 @@
                                 </div>
                                 <div class="h-32 border border-dashed rounded-xl overflow-hidden bg-white">
                                     @if ($edit_image_url)
-                                        <img src="{{ asset('storage/' . $edit_image_url) }}" class="w-full h-full object-cover">
+                                        <img src="{{ asset('storage/' . $edit_image_url) }}"
+                                            class="w-full h-full object-cover">
                                     @endif
                                 </div>
                             </div>
@@ -191,7 +201,7 @@
                         </div>
                     </div>
                 @endif
-                @if($selected_recipe_id)
+                @if ($selected_recipe_id)
                     <div class="mt-10 space-y-8 animate-fade-in">
 
                         <div class="p-1 border-2 border-red-500 rounded-[2rem] bg-white shadow-sm overflow-hidden">
@@ -221,8 +231,8 @@
 
                                     <div wire:loading wire:target="saveSOP" class="flex items-center gap-3">
                                         <svg class="animate-spin h-4 w-4 text-orange-500" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                                stroke-width="4" fill="none"></circle>
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="4" fill="none"></circle>
                                             <path class="opacity-75" fill="currentColor"
                                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                             </path>
