@@ -85,7 +85,7 @@
                 <div class="flex-grow border-t-2 border-gray-100 rounded-full"></div>
             </div>
 
-            <a href="/auth/google"
+            <a href="{{ route('google.redirect') }}"
                 class="relative z-10 w-full flex items-center justify-center gap-3 border-2 border-gray-100 bg-white py-3 rounded-xl hover:bg-gray-50 transition-all font-bold text-gray-700 text-sm group shadow-sm">
                 <svg class="w-5 h-5 filter grayscale group-hover:grayscale-0 transition-all" viewBox="0 0 24 24">
                     <path fill="#4285F4"
